@@ -18,9 +18,7 @@ function App() {
         </nav>
 
         <Routes>
-          {/* <Route exact path="/" component={Home} /> */}
           <Route path="/" element={<Home />} />
-          {/* <Route path="/about" component={About} /> */}
         </Routes>
       </div>
     </Router>

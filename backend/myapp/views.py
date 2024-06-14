@@ -28,3 +28,24 @@ def get_json_data(request):
  	return JsonResponse(file, safe=False)
 
 
+@api_view(['GET'])
+def get_database_data(request):
+    stock_data = list(models.StockData.objects.values())
+    return JsonResponse(stock_data, safe=False)
+
+
+@api_view(['POST'])
+def update_data(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            stock = models.StockData.objects.get(id=data['id'])
+            for key, value in data.items():
+                setattr(stock, key, value)
+            stock.save()
+            return JsonResponse({'status': 'success'})
+        except models.StockData.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'StockData not found'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

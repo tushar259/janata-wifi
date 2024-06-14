@@ -3,18 +3,53 @@ import config from '../config';
 
 const Home = () => {
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(`${config.API_BASE_URL}/get_json_data`)
+        fetch(`${config.API_BASE_URL}/get_database_data`)
             .then(response => {
                 if (!response.ok) {
                 throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
-            .then(data => setData(data))
-            .catch(error => console.error('Fetch error:', error));
+            .then(data => {
+                setData(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                setLoading(false);
+            });
     }, []);
+
+    const handleInputChange = (index, id, key, value) => {
+        const updatedData = [...data];
+        updatedData[index][key] = value;
+        setData(updatedData);
+        console.log(id);
+
+        fetch(`${config.API_BASE_URL}/update_data`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id, [key]: value }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Update successful');
+            } else {
+                console.error('Update error:', data.message);
+            }
+        })
+        .catch(error => console.error('Fetch error:', error));
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>
@@ -35,13 +70,55 @@ const Home = () => {
                 <tbody>
                     {data.map((row, index) => (
                         <tr key={index}>
-                            <td>{row.date}</td>
-                            <td>{row.trade_code}</td>
-                            <td>{row.high}</td>
-                            <td>{row.low}</td>
-                            <td>{row.open}</td>
-                            <td>{row.close}</td>
-                            <td>{row.volume}</td>
+                            <td>
+                                <input
+                                    type="date"
+                                    value={row.date}
+                                    onChange={(e) => handleInputChange(index, row.id, 'date', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="text"
+                                    value={row.trade_code}
+                                    onChange={(e) => handleInputChange(index, row.id, 'trade_code', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="text"
+                                    value={row.high}
+                                    onChange={(e) => handleInputChange(index, row.id, 'high', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="text"
+                                    value={row.low}
+                                    onChange={(e) => handleInputChange(index, row.id, 'low', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="text"
+                                    value={row.open}
+                                    onChange={(e) => handleInputChange(index, row.id, 'open', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="text"
+                                    value={row.close}
+                                    onChange={(e) => handleInputChange(index, row.id, 'close', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="text"
+                                    value={row.volume}
+                                    onChange={(e) => handleInputChange(index, row.id, 'volume', e.target.value)}
+                                />
+                            </td>
                         </tr>
                     ))}
                 </tbody>
