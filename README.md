@@ -1,2 +1,2 @@
-Before running Django please run database migration part. I did it in MySQL.
+Before running Django please run database migration part. I did it in MySQL.<br>
 This is my first time working with Python, Django and Typescript, and 2nd time working with Reactjs. It was really very challenging task for me. It really took a little time for me to learn new languages, libraries, frameworks and technologies. I also got help from ChatGPT. as a developer I believe that languages should not be any problem. That is all i want to say.
